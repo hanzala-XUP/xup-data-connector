@@ -1,0 +1,20 @@
+{
+  "name": "xup-data-connector",
+  "version": "0.1.0",
+  "private": true,
+  "description": "X UP Data: one read-only MCP connector for live Shopify data across every X UP brand",
+  "type": "module",
+  "engines": {
+    "node": ">=20.18.1"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "MOCK=1 ACCESS_KEY=local-dev-key-local-dev-key-0000 node src/server.js",
+    "test": "node test/smoke.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "pg": "^8.13.0",
+    "zod": "^3.25.0"
+  }
+}
