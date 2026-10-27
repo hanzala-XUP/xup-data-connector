@@ -43,6 +43,16 @@ function buildServer() {
 const httpServer = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   if (url.pathname === '/health') return send(res, 200, { ok: true, mock: config.mock });
+  // Shopify opens the App URL right after an install; show a plain confirmation (no data, no secrets)
+  if (url.pathname === '/' && req.method === 'GET') {
+    const shop = /^[a-z0-9-]+\.myshopify\.com$/.test(url.searchParams.get('shop') || '') ? url.searchParams.get('shop') : '';
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+    return res.end(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>X UP Data</title>
+<body style="font:16px/1.5 system-ui,sans-serif;max-width:560px;margin:15vh auto;padding:0 20px;color:#1b1b1a">
+<h1 style="font-size:22px">X UP Data is installed${shop ? ` on ${shop}` : ''}</h1>
+<p>This read-only connector lets X UP's tools read this store's sales and analytics. It cannot change anything in the store.</p>
+<p style="color:#6b675f">You can close this tab.</p></body>`);
+  }
 
   const m = url.pathname.match(/^\/mcp(?:\/([^/]+))?\/?$/);
   if (!m) return send(res, 404, { error: 'not found' });
